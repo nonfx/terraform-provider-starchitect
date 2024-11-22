@@ -1,10 +1,12 @@
 package resources
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	resschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -118,7 +120,16 @@ func (r *IACPACResource) Delete(ctx context.Context, req resource.DeleteRequest,
 }
 
 func GetScanResult(iacPath, pacPath string) string {
-	outputFile := "/Users/chandrashekhar/source-code/src/github.com/hashicorp/terraform-provider-starchitect/results.json"
+	var stderr bytes.Buffer
+	tempDir, err := os.MkdirTemp("", "regula-scan")
+	if err != nil {
+		return fmt.Sprintf("Error creating temporary directory: %v\n", err)
+	}
+	defer os.RemoveAll(tempDir)
+
+	// Create the output file path in the temporary directory
+	outputFile := filepath.Join(tempDir, "results.json")
+
 	cmd := exec.Command(
 		"regula",
 		"run",
@@ -128,22 +139,28 @@ func GetScanResult(iacPath, pacPath string) string {
 		"-f", "json",
 	)
 
-	// Redirect the output to a file
+	// Redirect the output to the temporary file
 	output, err := os.Create(outputFile)
 	if err != nil {
-		return fmt.Sprintf("error creating output file: %v\n", err)
-
+		return fmt.Sprintf("Error creating output file: %v\n", err)
 	}
 	defer output.Close()
-	cmd.Stdout = output
-	cmd.Stderr = os.Stderr
-	cmd.Run()
 
-	// Read the content of the output file
+	cmd.Stdout = output
+	cmd.Stderr = &stderr
+
+	err = cmd.Run()
+	if err != nil {
+		if bytes.Contains(stderr.Bytes(), []byte("rego_type_error")) {
+			return fmt.Sprintf("Error: rego_type_error encountered. %v", string(stderr.String()))
+		}
+		err = nil
+	}
+
 	content, err := os.ReadFile(outputFile)
 	if err != nil {
 		return fmt.Sprintf("Error reading output file: %s %v\n", outputFile, err)
 	}
-	os.Remove(outputFile)
+
 	return string(content)
 }
