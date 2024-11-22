@@ -20,11 +20,11 @@ resource "starchitect_iac_pac" "demo_example" {
 }
 
 variable "iac_path" {
-  default = "/Users/chandrashekhar/source-code/src/github.com/nonfx/tf-regula-test/module-test/iac"
+  default = "../testdata/valid_iac"
 }
 
 variable "pac_path" {
-  default = "/Users/chandrashekhar/source-code/src/github.com/nonfx/stance/foundation/data/rules/aws"
+  default = "../testdata/valid_pac"
 }
 
 output "scan_result" {
