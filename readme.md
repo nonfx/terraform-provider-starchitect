@@ -1,3 +1,39 @@
+# Starchitect Terraform Provider
+
+The **Starchitect Terraform Provider** allows you to integrate Infrastructure as Code (IaC) and Policy as Code (PaC) workflows into your Terraform configuration. This provider scans your IaC and PaC files and populates a Terraform output variable named `scan_result` with the results.
+
+---
+
+## Features
+
+- Accepts **IaC** (Infrastructure as Code) and **PaC** (Policy as Code) file paths as inputs.
+- Scans the provided files for compliance and best practices.
+- Outputs a detailed scan result to the Terraform output variable `scan_result`.
+
+---
+
+## Requirements
+
+- Terraform `>= 1.0.0`
+
+---
+
+## Installation
+
+Add the provider to your Terraform configuration. For example:
+
+```hcl
+terraform {
+  required_providers {
+    starchitect = {
+      source  = "hashicorp.com/edu/starchitect"
+      version = "1.0.0"
+    }
+  }
+}
+```
+[Example Terraform](./example/main.tf)
+
 
 # run locally
 
@@ -5,18 +41,11 @@
 
     ```
     provider_installation {
-
-    dev_overrides {
-        "hashicorp.com/edu/hashicups" = "/Users/  chandrashekhar/source-code/bin"
-        "hashicorp.com/edu/starchitect" = "/Users/    chandrashekhar/source-code/bin"
+        dev_overrides {
+            "hashicorp.com/edu/starchitect" = "<GOBIN PATH>"
+        }
+        direct {}
     }
-
-    # For all other providers, install them   directly from their origin provider
-    # registries as normal. If you omit this,     Terraform will _only_ use
-    # the dev_overrides block, and so no other    providers will be available.
-    direct {}
-    }
-
     ```
 
 - set go env `GOBIN` as `$GOPATH/bin`
@@ -28,4 +57,4 @@
     go install
     ```
 
-- new provider is ready to be used locally. refer example/main.tf
+- new provider is ready to be used locally. refer [example](./example/main.tf)

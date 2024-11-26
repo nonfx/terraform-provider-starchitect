@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"flag"
 	"log"
 
 	"terraform-provider-starchitect/starchitect"
@@ -20,20 +19,10 @@ var (
 )
 
 func main() {
-
-	var debug bool
-
-	flag.BoolVar(&debug, "debug", false, "set to true to run the provider with support for debuggers like delve")
-	flag.Parse()
-
 	opts := providerserver.ServeOpts{
 		Address: "hashicorp.com/edu/starchitect",
-		Debug:   debug,
 	}
-
-	err := providerserver.Serve(context.Background(), starchitect.New(version), opts)
-
-	if err != nil {
+	if err := providerserver.Serve(context.Background(), starchitect.New(version), opts); err != nil {
 		log.Fatal(err.Error())
 	}
 }

@@ -1,6 +1,7 @@
 package resources
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -24,7 +25,9 @@ func TestGetScanResult(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_ = GetScanResult(tt.args.iacPath, tt.args.pacPath)
+			result, score := GetScanResult(tt.args.iacPath, tt.args.pacPath)
+			fmt.Println(result)
+			fmt.Println(score)
 		})
 	}
 }
