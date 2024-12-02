@@ -24,6 +24,7 @@ type IACPACResource struct{}
 type IACPACResourceModel struct {
 	IACPath    types.String `tfsdk:"iac_path"`
 	PACPath    types.String `tfsdk:"pac_path"`
+	PACVersion types.String `tfsdk:"pac_version"`
 	ScanResult types.String `tfsdk:"scan_result"`
 	Score      types.String `tfsdk:"score"`
 }
@@ -46,6 +47,10 @@ func (r *IACPACResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 			},
 			"pac_path": resschema.StringAttribute{
 				Description: "PAC path",
+				Optional:    true,
+			},
+			"pac_version": resschema.StringAttribute{
+				Description: "default PAC version",
 				Optional:    true,
 			},
 			"scan_result": resschema.StringAttribute{
@@ -76,8 +81,9 @@ func (r *IACPACResource) Create(ctx context.Context, req resource.CreateRequest,
 
 	iacPath := plan.IACPath.ValueString()
 	pacPath := plan.PACPath.ValueString()
+	pacVersion := plan.PACVersion.ValueString()
 
-	scanResult, score := GetScanResult(iacPath, pacPath)
+	scanResult, score := GetScanResult(iacPath, pacPath, pacVersion)
 	plan.ScanResult = types.StringValue(scanResult)
 	plan.Score = types.StringValue(score)
 
@@ -95,8 +101,9 @@ func (r *IACPACResource) Read(ctx context.Context, req resource.ReadRequest, res
 
 	iacPath := state.IACPath.ValueString()
 	pacPath := state.PACPath.ValueString()
+	pacVersion := state.PACVersion.ValueString()
 
-	scanResult, score := GetScanResult(iacPath, pacPath)
+	scanResult, score := GetScanResult(iacPath, pacPath, pacVersion)
 	state.ScanResult = types.StringValue(scanResult)
 	state.Score = types.StringValue(score)
 
@@ -114,8 +121,9 @@ func (r *IACPACResource) Update(ctx context.Context, req resource.UpdateRequest,
 
 	iacPath := plan.IACPath.ValueString()
 	pacPath := plan.PACPath.ValueString()
+	pacVersion := plan.PACVersion.ValueString()
 
-	scanResult, score := GetScanResult(iacPath, pacPath)
+	scanResult, score := GetScanResult(iacPath, pacPath, pacVersion)
 	plan.ScanResult = types.StringValue(scanResult)
 	plan.Score = types.StringValue(score)
 
@@ -171,7 +179,7 @@ func calculateScore(filePath string) string {
 	return fmt.Sprintf("PASSED: %v FAILED: %v Score: %v percent", passCount, failCount, score)
 }
 
-func GetScanResult(iacPath, pacPath string) (string, string) {
+func GetScanResult(iacPath, pacPath, pacVersion string) (string, string) {
 
 	if pacPath == "" {
 		// Step 1: Create a temporary directory
@@ -180,7 +188,7 @@ func GetScanResult(iacPath, pacPath string) (string, string) {
 			log.Fatalf("Failed to create temporary directory: %v", err)
 		}
 		defer os.RemoveAll(tempCloneDir)
-		tempPACPath, err := getPACPath(tempCloneDir)
+		tempPACPath, err := getPACPath(tempCloneDir, pacVersion)
 		if err != nil {
 			return err.Error(), ""
 		}

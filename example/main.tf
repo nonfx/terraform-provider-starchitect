@@ -13,6 +13,7 @@ provider "starchitect" {}
 resource "starchitect_iac_pac" "demo_example" {
     iac_path = var.iac_path
     # pac_path = var.pac_path
+    # pac_version = var.pac_version
 }
 
 variable "iac_path" {
@@ -21,6 +22,11 @@ variable "iac_path" {
 
 variable "pac_path" {
   default = "../testdata/valid_pac"
+}
+
+variable "pac_version" {
+  // starchitect-cloudguard github branch reference
+  default = "main"
 }
 
 output "scan_result" {
