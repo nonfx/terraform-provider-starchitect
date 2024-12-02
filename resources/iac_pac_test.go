@@ -7,8 +7,9 @@ import (
 
 func TestGetScanResult(t *testing.T) {
 	type args struct {
-		iacPath string
-		pacPath string
+		iacPath    string
+		pacPath    string
+		pacVersion string
 	}
 	tests := []struct {
 		name string
@@ -25,7 +26,7 @@ func TestGetScanResult(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, score := GetScanResult(tt.args.iacPath, tt.args.pacPath)
+			result, score := GetScanResult(tt.args.iacPath, tt.args.pacPath, tt.args.pacVersion)
 			fmt.Println(result)
 			fmt.Println(score)
 		})
