@@ -1,0 +1,38 @@
+name: Release starchitect provider
+
+on:
+  push:
+    tags:
+      - 'v*.*.*' # Trigger this workflow on versioned tags
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      # Step 2: Set up Go
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.22'
+
+      # Step 3: Build the binary or artifact
+      - name: Build the binary
+        run: go build -o terraform-provider-starchitect .
+
+      # Step 4: Archive the artifact
+      - name: Archive the binary
+        run: zip release.zip terraform-provider-starchitect
+
+      # Step 5: Create the GitHub release and upload the artifact
+      - name: Create GitHub Release and upload artifact
+        uses: softprops/action-gh-release@v1
+        with:
+          files: release.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

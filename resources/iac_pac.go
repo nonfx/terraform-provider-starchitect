@@ -33,6 +33,30 @@ func NewIACPACResource() resource.Resource {
 	return &IACPACResource{}
 }
 
+func NewIACPACResourceWithModifyPlan() resource.ResourceWithModifyPlan {
+	return &IACPACResource{}
+}
+
+func (r *IACPACResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	var plan IACPACResourceModel
+	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	iacPath := plan.IACPath.ValueString()
+	pacPath := plan.PACPath.ValueString()
+	pacVersion := plan.PACVersion.ValueString()
+
+	scanResult, score := GetScanResult(iacPath, pacPath, pacVersion)
+	plan.ScanResult = types.StringValue(scanResult)
+	plan.Score = types.StringValue(score)
+
+	diags = resp.Plan.Set(ctx, plan)
+	resp.Diagnostics.Append(diags...)
+}
+
 func (r *IACPACResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_iac_pac"
 }
