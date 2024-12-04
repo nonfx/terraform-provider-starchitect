@@ -58,3 +58,7 @@ terraform {
     ```
 
 - new provider is ready to be used locally. refer [example](./example/main.tf)
+
+```
+terraform plan -out=tfplan && terraform show -json tfplan > plan.json
+```
