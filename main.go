@@ -20,7 +20,7 @@ var (
 
 func main() {
 	opts := providerserver.ServeOpts{
-		Address: "hashicorp.com/edu/starchitect",
+		Address: "registry.terraform.io/nonfx/starchitect",
 	}
 	if err := providerserver.Serve(context.Background(), starchitect.New(version), opts); err != nil {
 		log.Fatal(err.Error())

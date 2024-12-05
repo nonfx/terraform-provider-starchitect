@@ -26,7 +26,7 @@ Add the provider to your Terraform configuration. For example:
 terraform {
   required_providers {
     starchitect = {
-      source  = "hashicorp.com/edu/starchitect"
+      source  = "registry.terraform.io/nonfx/starchitect"
       version = "1.0.0"
     }
   }
@@ -42,7 +42,7 @@ terraform {
     ```
     provider_installation {
         dev_overrides {
-            "hashicorp.com/edu/starchitect" = "<GOBIN PATH>"
+            "registry.terraform.io/nonfx/starchitect" = "<GOBIN PATH>"
         }
         direct {}
     }

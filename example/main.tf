@@ -2,7 +2,7 @@
 terraform {
   required_providers {
     starchitect = {
-      source = "hashicorp.com/edu/starchitect"
+      source = "registry.terraform.io/nonfx/starchitect"
       version = "1.0.0"
     }
   }
