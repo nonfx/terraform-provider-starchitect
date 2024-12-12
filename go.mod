@@ -2,10 +2,7 @@ module terraform-provider-starchitect
 
 go 1.22.5
 
-require (
-	github.com/hashicorp/terraform-plugin-framework v1.13.0
-	github.com/hashicorp/terraform-plugin-log v0.9.0
-)
+require github.com/hashicorp/terraform-plugin-framework v1.13.0
 
 require (
 	dario.cat/mergo v1.0.0 // indirect
@@ -17,6 +14,7 @@ require (
 	github.com/go-git/gcfg v1.5.1-0.20230307220236-3a3c6141e376 // indirect
 	github.com/go-git/go-billy/v5 v5.5.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
+	github.com/hashicorp/terraform-plugin-log v0.9.0 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
 	github.com/kevinburke/ssh_config v1.2.0 // indirect
 	github.com/pjbgf/sha1cd v0.3.0 // indirect

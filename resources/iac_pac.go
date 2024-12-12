@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"terraform-provider-starchitect/resources/utils"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -359,18 +360,13 @@ func calculateScore(regulaOutput RegulaOutput) string {
 }
 
 func GetScanResult(iacPath, pacPath, pacVersion, logPath string) (string, string) {
+
+	var err error
 	if pacPath == "" {
-		// Step 1: Create a temporary directory
-		tempCloneDir, err := os.MkdirTemp("", "pac-clone-*")
-		if err != nil {
-			log.Fatalf("Failed to create temporary directory: %v", err)
-		}
-		defer os.RemoveAll(tempCloneDir)
-		tempPACPath, err := getPACPath(tempCloneDir, pacVersion)
+		pacPath, err = utils.GetDefaultPAC(iacPath, pacVersion)
 		if err != nil {
 			return err.Error(), ""
 		}
-		pacPath = tempPACPath
 	}
 
 	var stderr bytes.Buffer
