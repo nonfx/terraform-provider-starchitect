@@ -14,6 +14,8 @@ resource "starchitect_iac_pac" "demo_example" {
     iac_path = var.iac_path
     # pac_path = var.pac_path
     # pac_version = var.pac_version
+    threshold = var.threshold
+    log_path = var.log_path
 }
 
 variable "iac_path" {
@@ -27,6 +29,18 @@ variable "pac_path" {
 variable "pac_version" {
   // starchitect-cloudguard github branch reference
   default = "main"
+}
+
+variable "threshold" {
+  description = "Minimum required security score (0-100)"
+  type = string
+  default = "50"
+}
+
+variable "log_path" {
+  description = "Path to store log files"
+  type = string
+  default = "../logs"  # Logs will be stored in ./logs directory
 }
 
 output "scan_result" {
